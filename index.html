@@ -26,7 +26,6 @@
                     <div class="step" data-step="3">3</div>
                     <div class="step" data-step="4">4</div>
                     <div class="step" data-step="5">5</div>
-                    <div class="step" data-step="6">6</div>
                 </div>
 
                 <form id="multiStepForm" novalidate>
@@ -37,6 +36,8 @@
                             <h3 class="step-title">*What is the primary industry your web app will serve?</h3>
                             <div class="form-grid">
                                 <div class="radio-group">
+                                    <label><input type="radio" name="industry" value="Gaming"> Gaming</label>
+                                    <label><input type="radio" name="industry" value="Automobile"> Automobile</label>
                                     <label><input type="radio" name="industry" value="Healthcare"> Healthcare</label>
                                     <label><input type="radio" name="industry" value="Banking"> Banking</label>
                                     <label><input type="radio" name="industry" value="Insurance"> Insurance</label>
@@ -153,49 +154,13 @@
                         </div>
                     </div>
                     
-                    <!-- Step 5 -->
+                    <!-- Step 5: Final Step with updated contact form -->
                     <div class="form-step" data-step="5">
-                        <h3 class="step-title">Are there any compliance standards for your planned app? Check all that apply.</h3>
-                        <div class="form-grid">
-                           <div class="checkbox-group">
-                                <label><input type="checkbox" name="compliance" value="No"> No</label>
-                                <label><input type="checkbox" name="compliance" value="HIPAA"> HIPAA</label>
-                                <label><input type="checkbox" name="compliance" value="PCI-DSS"> PCI-DSS</label>
-                                <label><input type="checkbox" name="compliance" value="GDPR"> GDPR</label>
-                                <label><input type="checkbox" name="compliance" value="FDA"> FDA</label>
-                                <label><input type="checkbox" name="compliance" value="AML/KYC"> AML/KYC</label>
-                                <label><input type="checkbox" name="compliance" value="GLBA"> GLBA</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <label><input type="checkbox" name="compliance" value="OSHA"> OSHA</label>
-                                <label><input type="checkbox" name="compliance" value="EPA"> EPA</label>
-                                <label><input type="checkbox" name="compliance" value="NIST"> NIST</label>
-                                <label><input type="checkbox" name="compliance" value="SOX"> SOX</label>
-                                <label><input type="checkbox" name="compliance" value="SEC"> SEC</label>
-                                <label><input type="checkbox" name="compliance" value="I need your advice on compliance"> I need your advice on compliance</label>
-                                <label><input type="checkbox" name="compliance" value="Other"> Other (please specify) <input type="text" name="compliance_other"></label>
-                            </div>
-                        </div>
-
-                        <div class="buttons">
-                            <button type="button" class="prev-btn">Back</button>
-                            <button type="button" class="next-btn">Next</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 6: Final Step with updated contact form -->
-                    <div class="form-step" data-step="6">
                         <div class="final-step-header">
-                            <div class="final-step-text">
+                            <div>
                                 <h3>Almost done! ✨</h3>
                                 <p>Thanks for sharing your needs with us! 🙏</p>
                                 <p>You will receive the estimate for your project within 24 hours. It's <strong>non-binding</strong> and absolutely <strong>free</strong>.</p>
-                            </div>
-                             <div class="final-step-about">
-                                <h4>About ScienceSoft:</h4>
-                                <p>👥 35 years on the market</p>
-                                <p>📈 750+ specialists</p>
-                                <p>🏆 4,000 success stories</p>
                             </div>
                         </div>
 
@@ -246,13 +211,7 @@
             <div id="thankYouMessage" style="display: none;">
                 <div class="thank-you-content">
                      <h2>Thank you for your request!</h2>
-                     <p>We will analyze your case and get back to you within a business day to share a ballpark estimate.</p>
-                     <p>In the meantime, would you like to learn more about ScienceSoft?</p>
-                     <ul>
-                         <li>Project success no matter what: <a href="#">learn how we make good on our mission.</a></li>
-                         <li>4,000 successful projects: <a href="#">explore our portfolio.</a></li>
-                         <li>1,300+ incredible clients: <a href="#">read what they say.</a></li>
-                     </ul>
+                     <p>We will evaluate your case and provide you with a preliminary cost estimate within one business day.</p>
                 </div>
                 <div class="thank-you-image">
                      <img src="https://www.scnsoft.com/bundles/app/img/areas/parts/configurator_finish.svg" alt="Illustration of a person with an email envelope">

@@ -111,65 +111,59 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- Updated Form Submission Logic ---
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const submitBtn = form.querySelector('.submit-btn');
 
         if (validateFinalStep()) {
-            // Disable button to prevent multiple submissions
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
 
             const formData = new FormData(form);
-
-            // 1. Get values for specific HubSpot fields
             const fullName = formData.get('full_name');
             const companyName = formData.get('company_name');
             const workEmail = formData.get('work_email');
 
-            // 2. Build the "Message" string from the rest of the form data
             let messageBody = '';
             const excludedFields = ['full_name', 'company_name', 'work_email'];
-            
             for (let [key, value] of formData.entries()) {
-                // Only include fields that have a value and are not in the excluded list
                 if (value && !excludedFields.includes(key)) {
-                    // Format the key for better readability (e.g., "software_version" -> "Software Version")
                     let formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                     messageBody += `${formattedKey}: ${value}\n`;
                 }
             }
-
-            // Manually add the communication preference, as it's not a standard form input
             const commPref = document.querySelector('.comm-options button.active').textContent;
             messageBody += `Preferred Communication: ${commPref}\n`;
             
-            // 3. Construct the final data object for the API
             const hubspotData = {
               fields: [
                 { "name": "FirstName", "value": fullName },
                 { "name": "Company", "value": companyName },
                 { "name": "Email", "value": workEmail },
-                { "name": "Message", "value": messageBody.trim() } // Use trim() to remove any trailing newline
+                { "name": "Message", "value": messageBody.trim() }
               ]
             };
             
-            // 4. Send the data to the HubSpot API
             try {
                 const response = await fetch('https://api.hsforms.com/submissions/v3/integration/submit/243234182/9a88fded-1756-4ecc-81a0-93c198503d41', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(hubspotData)
                 });
 
                 if (response.ok) {
-                    alert('Form submitted successfully! Thank you.');
-                    form.reset(); // Optionally reset the form
-                    // You could also redirect or show a thank-you message on the page
+                    // --- SUCCESS LOGIC ---
+                    // Hide the form header, progress bar, and the form itself
+                    document.querySelector('.form-header').style.display = 'none';
+                    document.querySelector('.form-container').style.display = 'none';
+
+                    // Show the thank you message
+                    document.getElementById('thankYouMessage').style.display = 'flex';
+
+                    // Scroll to top to ensure the message is visible
+                    window.scrollTo(0, 0);
+
                 } else {
                     const errorData = await response.json();
                     console.error('HubSpot submission failed:', errorData);
@@ -180,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Network or other error:', error);
                 alert('An unexpected error occurred. Please check your connection and try again.');
             } finally {
-                // Re-enable the button
+                // Re-enable the button in case of failure
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Finish';
             }

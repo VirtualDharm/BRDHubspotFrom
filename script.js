@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const pStepData = pStep.dataset.step;
             pStep.classList.remove('active', 'completed');
             
-            if (pStepData === currentStepData) {
+            if (parseFloat(pStepData) === parseFloat(currentStepData)) {
                 pStep.classList.add('active');
             }
             if (parseFloat(pStepData) < parseFloat(currentStepData)) {
@@ -24,11 +24,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function validateStep(stepIndex) {
+        let isValid = true;
+        
+        // Use a switch statement to check validation for each required step
+        switch(stepIndex) {
+            case 0: // Step 1: Industry
+                if (!form.querySelector('input[name="industry"]:checked')) {
+                    isValid = false;
+                }
+                break;
+            case 1: // Step 2: Software Version & App Use
+                if (!form.querySelector('input[name="software_version"]:checked') || !form.querySelector('input[name="app_use"]:checked')) {
+                    isValid = false;
+                }
+                break;
+            case 2: // Step 3: Number of Users
+                if (!form.querySelector('input[name="users"]:checked')) {
+                    isValid = false;
+                }
+                break;
+            case 3: // Step 4: Environment
+                if (!form.querySelector('input[name="environment"]:checked')) {
+                    isValid = false;
+                }
+                // Other fields in this step (tech stack, integrations) are not marked as required.
+                break;
+            // Step 5 (index 4) and Step 6 (index 5) don't have required radio/checkbox groups to check before navigating.
+            // Step 6's validation is handled by the browser's form submission process due to the 'required' attribute on text inputs.
+        }
+
+        if (!isValid) {
+            alert('Please fill out all required fields marked with an asterisk (*) before proceeding.');
+        }
+
+        return isValid;
+    }
+
     form.addEventListener('click', function(e) {
         if (e.target.matches('.next-btn')) {
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                showStep(currentStep);
+            // Add validation check before proceeding
+            if (validateStep(currentStep)) {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
             }
         } else if (e.target.matches('.prev-btn')) {
             if (currentStep > 0) {
@@ -47,15 +87,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Handle form submission
-        alert('Form submitted successfully!');
-        // You can use FormData to collect all form data
-        const formData = new FormData(form);
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
+        // The browser will automatically handle the 'required' fields on the last step
+        if (!form.checkValidity()) {
+             e.preventDefault();
+             alert('Please fill out all required contact fields marked with an asterisk (*).');
+        } else {
+             e.preventDefault();
+            // Handle successful form submission
+            alert('Form submitted successfully!');
+            const formData = new FormData(form);
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
         }
     });
 

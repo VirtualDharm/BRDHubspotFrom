@@ -182,7 +182,7 @@
                         </div>
                     </div>
                     
-                    <!-- Step 6 -->
+                    <!-- Step 6: Final Step with updated contact form -->
                     <div class="form-step" data-step="6">
                         <div class="final-step-header">
                             <div class="final-step-text">
@@ -205,10 +205,22 @@
                             <span class="tooltiptext">We use your contact data to send a personalized quote that matches your business needs — no spam, just your numbers.</span>
                         </span></h4>
                         <div class="contact-form">
-                            <input type="text" name="full_name" placeholder="*Full name" required>
-                            <input type="text" name="company_name" placeholder="*Company name" required>
-                            <input type="email" name="work_email" placeholder="*Work email" required>
-                            <input type="tel" name="phone_number" placeholder="Phone number">
+                            <div>
+                                <input type="text" name="full_name" placeholder="*Full name" required>
+                                <div class="error-message"></div>
+                            </div>
+                            <div>
+                                <input type="text" name="company_name" placeholder="*Company name" required>
+                                <div class="error-message"></div>
+                            </div>
+                            <div>
+                                <input type="email" name="work_email" placeholder="*Work email" required>
+                                <div class="error-message"></div>
+                            </div>
+                             <div>
+                                <input type="tel" name="phone_number" placeholder="Phone number">
+                                <!-- No error message needed as it's not required -->
+                            </div>
                         </div>
                         
                         <div class="communication-preference">

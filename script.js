@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('configuratorForm');
     const slides = Array.from(form.querySelectorAll('.cf-slide'));
     const nextBtn = document.querySelector('.cf-next-btn');
+    console.log('check this')
+    console.log(nextBtn); // should not be null
     const backBtn = document.querySelector('.cf-back-btn');
     const progressBar = document.getElementById('progressBar');
     const validationMessage = document.getElementById('validation-message');
@@ -41,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Core Logic ---
     function handleNext() {
+        console.log("reaching next function");
         if (!validateCurrentSlide()) {
             validationMessage.textContent = "Please make a selection to continue.";
             return;

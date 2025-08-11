@@ -50,20 +50,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return allValid;
     }
 
-    // New: Dedicated validation function for the final step's required fields
     function validateFinalStep() {
         let isStepValid = true;
         const finalStep = document.querySelector('.form-step[data-step="6"]');
-        
-        // Find all required inputs in the final step
         const requiredInputs = finalStep.querySelectorAll('input[required]');
 
         requiredInputs.forEach(input => {
             const errorDiv = input.parentElement.querySelector('.error-message');
-            // Clear previous error message
             errorDiv.textContent = ''; 
 
-            // Check if the input is empty
             if (input.value.trim() === '') {
                 errorDiv.textContent = 'This field is required.';
                 isStepValid = false;
@@ -116,20 +111,80 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Updated: Form submission logic
-    form.addEventListener('submit', function(e) {
-        e.preventDefault(); // Always prevent the default submission behavior
+    // --- Updated Form Submission Logic ---
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('.submit-btn');
 
-        // Validate the final step using our new function
         if (validateFinalStep()) {
-            alert('Form submitted successfully!');
+            // Disable button to prevent multiple submissions
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
             const formData = new FormData(form);
+
+            // 1. Get values for specific HubSpot fields
+            const fullName = formData.get('full_name');
+            const companyName = formData.get('company_name');
+            const workEmail = formData.get('work_email');
+
+            // 2. Build the "Message" string from the rest of the form data
+            let messageBody = '';
+            const excludedFields = ['full_name', 'company_name', 'work_email'];
+            
             for (let [key, value] of formData.entries()) {
-                console.log(key, value);
+                // Only include fields that have a value and are not in the excluded list
+                if (value && !excludedFields.includes(key)) {
+                    // Format the key for better readability (e.g., "software_version" -> "Software Version")
+                    let formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    messageBody += `${formattedKey}: ${value}\n`;
+                }
             }
-            // Here you could add logic to actually send the data, reset the form, etc.
+
+            // Manually add the communication preference, as it's not a standard form input
+            const commPref = document.querySelector('.comm-options button.active').textContent;
+            messageBody += `Preferred Communication: ${commPref}\n`;
+            
+            // 3. Construct the final data object for the API
+            const hubspotData = {
+              fields: [
+                { "name": "FirstName", "value": fullName },
+                { "name": "Company", "value": companyName },
+                { "name": "Email", "value": workEmail },
+                { "name": "Message", "value": messageBody.trim() } // Use trim() to remove any trailing newline
+              ]
+            };
+            
+            // 4. Send the data to the HubSpot API
+            try {
+                const response = await fetch('https://api.hsforms.com/submissions/v3/integration/submit/243234182/9a88fded-1756-4ecc-81a0-93c198503d41', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(hubspotData)
+                });
+
+                if (response.ok) {
+                    alert('Form submitted successfully! Thank you.');
+                    form.reset(); // Optionally reset the form
+                    // You could also redirect or show a thank-you message on the page
+                } else {
+                    const errorData = await response.json();
+                    console.error('HubSpot submission failed:', errorData);
+                    alert('There was an error submitting the form. Please try again.');
+                }
+
+            } catch (error) {
+                console.error('Network or other error:', error);
+                alert('An unexpected error occurred. Please check your connection and try again.');
+            } finally {
+                // Re-enable the button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Finish';
+            }
         }
-        // If validation fails, the error messages are already displayed, and nothing else happens.
     });
 
     showStep(currentStep);

@@ -25,45 +25,37 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function validateStep(stepIndex) {
-        let isValid = true;
+        let allValid = true;
+        const currentStepDiv = steps[stepIndex];
+
+        // Clear previous error messages within the current step
+        currentStepDiv.querySelectorAll('.error-message').forEach(msg => msg.textContent = '');
         
-        // Use a switch statement to check validation for each required step
-        switch(stepIndex) {
-            case 0: // Step 1: Industry
-                if (!form.querySelector('input[name="industry"]:checked')) {
-                    isValid = false;
-                }
-                break;
-            case 1: // Step 2: Software Version & App Use
-                if (!form.querySelector('input[name="software_version"]:checked') || !form.querySelector('input[name="app_use"]:checked')) {
-                    isValid = false;
-                }
-                break;
-            case 2: // Step 3: Number of Users
-                if (!form.querySelector('input[name="users"]:checked')) {
-                    isValid = false;
-                }
-                break;
-            case 3: // Step 4: Environment
-                if (!form.querySelector('input[name="environment"]:checked')) {
-                    isValid = false;
-                }
-                // Other fields in this step (tech stack, integrations) are not marked as required.
-                break;
-            // Step 5 (index 4) and Step 6 (index 5) don't have required radio/checkbox groups to check before navigating.
-            // Step 6's validation is handled by the browser's form submission process due to the 'required' attribute on text inputs.
-        }
+        // Find all question blocks in the current step
+        const questions = currentStepDiv.querySelectorAll('.question-block');
 
-        if (!isValid) {
-            alert('Please fill out all required fields marked with an asterisk (*) before proceeding.');
-        }
+        questions.forEach(question => {
+            const title = question.querySelector('.step-title');
+            // Check only if the question is required (has an asterisk)
+            if (title && title.textContent.startsWith('*')) {
+                // Find the radio buttons within this question block
+                const inputs = question.querySelectorAll('input[type="radio"]');
+                if (inputs.length > 0) {
+                    const inputName = inputs[0].name;
+                    if (!form.querySelector(`input[name="${inputName}"]:checked`)) {
+                        allValid = false;
+                        // Display error message within this question's block
+                        question.querySelector('.error-message').textContent = 'Please select an option.';
+                    }
+                }
+            }
+        });
 
-        return isValid;
+        return allValid;
     }
 
     form.addEventListener('click', function(e) {
         if (e.target.matches('.next-btn')) {
-            // Add validation check before proceeding
             if (validateStep(currentStep)) {
                 if (currentStep < steps.length - 1) {
                     currentStep++;
@@ -72,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else if (e.target.matches('.prev-btn')) {
             if (currentStep > 0) {
+                // Clear errors when going back
+                const currentStepDiv = steps[currentStep];
+                currentStepDiv.querySelectorAll('.error-message').forEach(msg => msg.textContent = '');
                 currentStep--;
                 showStep(currentStep);
             }
@@ -88,13 +83,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     form.addEventListener('submit', function(e) {
-        // The browser will automatically handle the 'required' fields on the last step
+        e.preventDefault();
         if (!form.checkValidity()) {
-             e.preventDefault();
              alert('Please fill out all required contact fields marked with an asterisk (*).');
         } else {
-             e.preventDefault();
-            // Handle successful form submission
             alert('Form submitted successfully!');
             const formData = new FormData(form);
             for (let [key, value] of formData.entries()) {

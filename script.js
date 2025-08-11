@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validateFinalStep() {
         let isStepValid = true;
-        const finalStep = document.querySelector('.form-step[data-step="6"]');
+        const finalStep = document.querySelector('.form-step[data-step="5"]');
         const requiredInputs = finalStep.querySelectorAll('input[required]');
 
         requiredInputs.forEach(input => {

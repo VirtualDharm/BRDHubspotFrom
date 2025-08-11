@@ -90,6 +90,7 @@ body {
 .step.completed {
     background-color: #4CAF50;
     border-color: #4CAF50;
+    cursor: pointer; /* Added for clickability indication */
 }
 
 .form-step {
